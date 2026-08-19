@@ -30,13 +30,30 @@ export const SITE = {
   title: "Kit Investidor Racional — E-book + 3 checklists para investir com critério",
   description:
     "E-book de 55 páginas e 3 filtros práticos: 24 perguntas para ações, 25 para FIIs e o guia completo de tributação. Material educativo, sem dica de ativo.",
-  /** [REQUIRES REAL DATA] exigidos pelo Meta Business e pelo Google Ads */
+  /**
+   * Identificação do fornecedor.
+   *
+   * Não é praxe de mercado: o Decreto 7.962/2013, que regulamenta o CDC
+   * para comércio eletrônico, exige que o site que oferta ao consumidor
+   * exiba nome, CPF ou CNPJ, endereço físico e endereço eletrônico em
+   * local de destaque.
+   *
+   * `doc` aceita CPF ou CNPJ — o rótulo é deduzido pela quantidade de
+   * dígitos, então quem vende como pessoa física não precisa de campo
+   * diferente nem corre o risco de publicar "CNPJ" com um CPF ao lado.
+   */
   legal: {
     entity: process.env.NEXT_PUBLIC_LEGAL_ENTITY ?? null,
-    cnpj: process.env.NEXT_PUBLIC_LEGAL_CNPJ ?? null,
+    doc: process.env.NEXT_PUBLIC_LEGAL_DOC ?? null,
+    address: process.env.NEXT_PUBLIC_LEGAL_ADDRESS ?? null,
     email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? null,
   },
 } as const;
+
+/** "CPF" ou "CNPJ", conforme a quantidade de dígitos informada. */
+export function docLabel(doc: string): "CPF" | "CNPJ" {
+  return doc.replace(/[^0-9]/g, "").length > 11 ? "CNPJ" : "CPF";
+}
 
 export const ogImage = {
   url: "/og/og-default.jpg",

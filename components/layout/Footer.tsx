@@ -1,6 +1,6 @@
 import { Container, Rule } from "@/components/ui/Section";
 import { Wordmark } from "@/components/marks/BrandMark";
-import { SITE } from "@/lib/site";
+import { SITE, docLabel } from "@/lib/site";
 
 /**
  * O disclaimer não está escondido aqui por obrigação — ele é parte do
@@ -99,13 +99,20 @@ export function Footer() {
             Regras tributárias e regulatórias mudam por lei. Confirme sempre as vigentes junto à
             Receita Federal, à CVM e ao Banco Central antes de agir.
           </p>
+          {/* Identificação do fornecedor — exigida pelo Decreto 7.962/2013
+              para sites que ofertam ao consumidor. */}
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-2">
             <span>
               © {year} {SITE.legal.entity ?? SITE.name}
             </span>
-            {SITE.legal.cnpj ? <span>· CNPJ {SITE.legal.cnpj}</span> : null}
+            {SITE.legal.doc ? (
+              <span>
+                · {docLabel(SITE.legal.doc)} {SITE.legal.doc}
+              </span>
+            ) : null}
             <span>· Edição {SITE.edition}</span>
           </div>
+          {SITE.legal.address ? <p>{SITE.legal.address}</p> : null}
         </div>
       </Container>
     </footer>
