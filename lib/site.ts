@@ -15,11 +15,15 @@ export const SITE = {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : "https://kitinvestidorracional.com.br"),
   /**
-   * Bloqueia indexação. Ligado enquanto a página roda em URL provisória:
-   * um .vercel.app indexado vira conteúdo duplicado do domínio real
-   * depois, e é trabalhoso de desfazer.
+   * Bloqueia indexação enquanto NÃO houver domínio próprio configurado.
+   *
+   * O padrão é seguro por decisão: um .vercel.app indexado vira conteúdo
+   * duplicado do domínio real depois, e é trabalhoso de desfazer. No dia
+   * em que NEXT_PUBLIC_SITE_URL apontar para o domínio final, a página
+   * passa a ser indexável sozinha — não há como esquecer de destravar.
    */
-  noindex: process.env.NEXT_PUBLIC_NOINDEX === "1",
+  noindex:
+    process.env.NEXT_PUBLIC_NOINDEX === "1" || !process.env.NEXT_PUBLIC_SITE_URL,
   locale: "pt_BR",
   lang: "pt-BR",
   edition: "2026",

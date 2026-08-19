@@ -8,10 +8,14 @@
  */
 
 export const OFFER = {
-  /** [REQUIRES REAL DATA] preço final em BRL. null → a UI omite o valor. */
-  price: (process.env.NEXT_PUBLIC_PRICE ? Number(process.env.NEXT_PUBLIC_PRICE) : null) as
-    | number
-    | null,
+  /**
+   * Preço em BRL. A variável de ambiente vence; o padrão abaixo existe
+   * para o site subir configurado em qualquer ambiente. Preço é decisão
+   * de negócio revisável, não segredo — versionar o padrão é proposital.
+   */
+  price: (process.env.NEXT_PUBLIC_PRICE
+    ? Number(process.env.NEXT_PUBLIC_PRICE)
+    : 47.9) as number | null,
   currency: "BRL",
   /** [REQUIRES REAL DATA] https://pay.kiwify.com.br/<id> */
   checkoutUrl: process.env.NEXT_PUBLIC_CHECKOUT_URL ?? null,
