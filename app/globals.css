@@ -1,0 +1,382 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — direção "Livro-Razão"
+   Editorial financeiro escuro. Grade de livro contábil, dourado
+   com avareza, tipografia com personalidade. Ver
+   docs/estrategia-landing-page.md §14–15.
+   ============================================================ */
+@theme {
+  /* cor */
+  --color-ink: #080b12;
+  --color-ledger: #0e1420;
+  --color-rule: #1c2534;
+  --color-gold: #d4a438;
+  --color-gold-lift: #f0c45e;
+  --color-parchment: #e8e4da;
+  --color-muted: #8a93a3;
+  --color-alert: #e06b5c;
+  --color-ok: #4fa88b;
+
+  /* tipografia — 3 papéis */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-switzer), system-ui, -apple-system, sans-serif;
+  --font-data: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  /* forma */
+  --radius-sm: 2px;
+  --radius: 3px;
+
+  /* sombra — a única da página */
+  --shadow-gold: 0 0 32px -8px --alpha(var(--color-gold) / 55%);
+
+  /* motion */
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --duration-micro: 120ms;
+  --duration-ui: 200ms;
+  --duration-reveal: 480ms;
+  --duration-hero: 560ms;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* compensa o header fixo ao pular para uma âncora */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-parchment);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    font-feature-settings: "kern", "liga";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variation-settings: "WONK" 1, "SOFT" 0;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-parchment);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* números sempre alinhados — é um livro-razão */
+  .font-data,
+  [class*="tabular"] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================================
+   ESCALA TIPOGRÁFICA — classes semânticas, para manter o JSX limpo
+   ============================================================ */
+@layer components {
+  .t-display-xl {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    font-weight: 600;
+  }
+  .t-display-l {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.016em;
+    font-weight: 600;
+  }
+  .t-h3 {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  .t-body-l {
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    line-height: 1.68;
+  }
+  .t-label {
+    font-family: var(--font-data);
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .t-data,
+  .font-data {
+    /* desliga o zero pontuado do JetBrains Mono: em número grande ele
+       é lido como glifo estranho, não como algarismo */
+    font-feature-settings: "zero" 0;
+  }
+
+  .t-data {
+    font-family: var(--font-data);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ============================================================
+   TEXTURA — grão de papel. Mata o banding dos escuros.
+   ============================================================ */
+@layer components {
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION — sem exceções, sem !important
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    /* Zerar só a duração não basta: com animation-fill-mode: both, o
+       elemento segura o estado inicial (opacity 0) durante o DELAY.
+       Sem isto, quem pede menos movimento vê a página piscar. */
+    animation-delay: 0ms;
+    transition-delay: 0ms;
+  }
+}
+
+/* ============================================================
+   ENTRADA DO HERÓI — CSS puro, de propósito.
+   Animação em JS só começa depois da hidratação; keyframes CSS
+   começam na análise do HTML. Como o herói é o LCP, isso importa.
+
+   Nota de performance: o <h1> anima SÓ transform, nunca opacity.
+   Elemento com opacity 0 não conta como pintado para o LCP — animar
+   a opacidade do maior texto da página atrasaria a métrica.
+   ============================================================ */
+@layer components {
+  @keyframes ir-rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ir-rise-opaque {
+    from {
+      transform: translateY(18px);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  .anim-rise {
+    animation: ir-rise var(--duration-hero) var(--ease-out-quart) both;
+  }
+
+  /* para o LCP: sobe sem passar por opacity 0 */
+  .anim-rise-opaque {
+    animation: ir-rise-opaque var(--duration-hero) var(--ease-out-quart) both;
+  }
+}
+
+/* ============================================================
+   ACORDEÃO NATIVO — <details name="faq">
+   O navegador cuida da semântica e do teclado. Onde houver suporte a
+   ::details-content + interpolate-size, a abertura é animada; onde não
+   houver, ela simplesmente acontece de imediato. Nada quebra.
+   ============================================================ */
+@layer components {
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item[open] summary svg {
+    transform: rotate(45deg);
+  }
+
+  @supports (interpolate-size: allow-keywords) {
+    @media (prefers-reduced-motion: no-preference) {
+      :root {
+        interpolate-size: allow-keywords;
+      }
+
+      .faq-item::details-content {
+        block-size: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition:
+          block-size 240ms var(--ease-out-quart),
+          opacity 200ms var(--ease-out-quart),
+          content-visibility 240ms allow-discrete;
+      }
+
+      .faq-item[open]::details-content {
+        block-size: auto;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   REVELAÇÃO NO SCROLL — CSS + IntersectionObserver.
+   Substitui a biblioteca de animação: o mesmo resultado visual por
+   ~37 KB gzip a menos, e sem trabalho na thread principal a cada frame.
+   Só transform e opacity.
+   ============================================================ */
+@layer components {
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity var(--duration-reveal) var(--ease-out-cubic),
+      transform var(--duration-reveal) var(--ease-out-cubic);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* traço do gráfico, revelado ao entrar na tela */
+  .draw-line {
+    stroke-dasharray: var(--draw-length, 1200);
+    stroke-dashoffset: var(--draw-length, 1200);
+    transition: stroke-dashoffset 900ms var(--ease-out-cubic);
+  }
+  .draw-line[data-visible="true"] {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Sem JS: ver o <noscript> em app/layout.tsx, que reverte estes estados. */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .draw-line {
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}
+
+/* ============================================================
+   ANIMAÇÕES DIRIGIDAS POR SCROLL — sem JavaScript.
+   Onde o navegador suporta, o parallax do herói e a barra da margem
+   de razão rodam no compositor, fora da thread principal. Onde não
+   suporta, simplesmente não acontecem — o layout não depende delas.
+   ============================================================ */
+@keyframes ir-parallax {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: translateY(-22px);
+  }
+}
+
+@keyframes ir-rail-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-plate {
+      animation: ir-parallax linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+      will-change: transform;
+    }
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .rail-fill {
+      animation: ir-rail-fill linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+/* ============================================================
+   REVELAÇÃO EM GRUPO
+   Um observer para a lista inteira, em vez de um por item. O
+   escalonamento vira delay de CSS por posição. Corta dezenas de
+   componentes de cliente e de IntersectionObservers da página.
+   ============================================================ */
+@layer components {
+  .reveal-group > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity var(--duration-reveal) var(--ease-out-cubic),
+      transform var(--duration-reveal) var(--ease-out-cubic);
+  }
+
+  .reveal-group[data-visible="true"] > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-group[data-visible="true"] > *:nth-child(1) { transition-delay: 0ms; }
+  .reveal-group[data-visible="true"] > *:nth-child(2) { transition-delay: 70ms; }
+  .reveal-group[data-visible="true"] > *:nth-child(3) { transition-delay: 140ms; }
+  .reveal-group[data-visible="true"] > *:nth-child(4) { transition-delay: 210ms; }
+  .reveal-group[data-visible="true"] > *:nth-child(5) { transition-delay: 280ms; }
+  .reveal-group[data-visible="true"] > *:nth-child(6) { transition-delay: 350ms; }
+  /* a partir do sétimo o escalonamento para de ajudar e vira espera */
+  .reveal-group[data-visible="true"] > *:nth-child(n + 7) { transition-delay: 400ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-group > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

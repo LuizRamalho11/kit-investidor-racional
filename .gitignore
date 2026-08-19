@@ -1,0 +1,16 @@
+# ── Produto ────────────────────────────────────────────────
+# Os PDFs do Kit são o material vendido. A entrega é pela Kiwify,
+# a landing page não depende deles em nada, e histórico de Git é
+# permanente — então eles nunca entram aqui.
+*.pdf
+
+node_modules/
+.next/
+out/
+build/
+.env*
+!.env.example
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+.vercel
