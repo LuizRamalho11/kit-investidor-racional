@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Section";
-import { SITE, docLabel } from "@/lib/site";
+import { SITE, docLabel, formatDoc } from "@/lib/site";
 import { LegalDocument } from "@/components/layout/LegalDocument";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function PrivacidadePage() {
         <h2>1. Quem trata os dados</h2>
         <p>
           {SITE.legal.entity
-            ? `${SITE.legal.entity}${SITE.legal.doc ? `, ${docLabel(SITE.legal.doc)} ${SITE.legal.doc}` : ""}, é a controladora dos dados tratados neste site.`
+            ? `${SITE.legal.entity}${SITE.legal.doc ? `, ${docLabel(SITE.legal.doc)} ${formatDoc(SITE.legal.doc)}` : ""}, é a controladora dos dados tratados neste site.`
             : "A identificação completa do controlador dos dados consta no rodapé deste site."}{" "}
           Esta política descreve quais dados são coletados, com que finalidade e por quanto tempo,
           conforme a Lei nº 13.709/2018 (LGPD).

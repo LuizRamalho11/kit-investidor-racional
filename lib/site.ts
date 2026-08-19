@@ -55,6 +55,22 @@ export function docLabel(doc: string): "CPF" | "CNPJ" {
   return doc.replace(/[^0-9]/g, "").length > 11 ? "CNPJ" : "CPF";
 }
 
+/**
+ * Formata o documento para exibição, aceitando o valor com ou sem
+ * pontuação. Um CPF cru no rodapé lê como número de sistema, não como
+ * identificação — e esta é uma página cujo argumento é rigor.
+ */
+export function formatDoc(doc: string): string {
+  const digits = doc.replace(/[^0-9]/g, "");
+  if (digits.length === 11) {
+    return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+  if (digits.length === 14) {
+    return digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+  }
+  return doc;
+}
+
 export const ogImage = {
   url: "/og/og-default.jpg",
   width: 1200,

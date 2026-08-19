@@ -1,6 +1,6 @@
 import { Container, Rule } from "@/components/ui/Section";
 import { Wordmark } from "@/components/marks/BrandMark";
-import { SITE, docLabel } from "@/lib/site";
+import { SITE, docLabel, formatDoc } from "@/lib/site";
 
 /**
  * O disclaimer não está escondido aqui por obrigação — ele é parte do
@@ -107,7 +107,7 @@ export function Footer() {
             </span>
             {SITE.legal.doc ? (
               <span>
-                · {docLabel(SITE.legal.doc)} {SITE.legal.doc}
+                · {docLabel(SITE.legal.doc)} {formatDoc(SITE.legal.doc)}
               </span>
             ) : null}
             <span>· Edição {SITE.edition}</span>
