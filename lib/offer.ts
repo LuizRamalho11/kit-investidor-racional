@@ -23,16 +23,23 @@ export const OFFER = {
 
 export const isCheckoutReady = Boolean(OFFER.checkoutUrl);
 
-const brl = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
+/**
+ * Preço redondo sai sem centavos ("R$ 47"); preço com centavos sai com os
+ * dois dígitos ("R$ 47,90"). Sem isso, 47.90 vira "R$ 47,9", que parece
+ * defeito de formatação numa página cujo argumento é rigor.
+ */
+function format(value: number): string {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
 
 /** Preço formatado, ou null quando ainda não definido. */
 export function formatPrice(): string | null {
-  return OFFER.price === null ? null : brl.format(OFFER.price);
+  return OFFER.price === null ? null : format(OFFER.price);
 }
 
 /** "Quero o Kit" → "Quero o Kit — R$ 47" quando houver preço. */

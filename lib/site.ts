@@ -3,8 +3,23 @@
 export const SITE = {
   name: "Kit Investidor Racional",
   shortName: "Investidor Racional",
-  /** [REQUIRES REAL DATA] domínio definitivo */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://kitinvestidorracional.com.br",
+  /**
+   * Domínio. Ordem: variável explícita > URL de produção da Vercel >
+   * placeholder. O fallback da Vercel existe para que canonical, Open
+   * Graph e sitemap apontem para um endereço que responde de verdade
+   * enquanto o domínio final não entra.
+   */
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "https://kitinvestidorracional.com.br"),
+  /**
+   * Bloqueia indexação. Ligado enquanto a página roda em URL provisória:
+   * um .vercel.app indexado vira conteúdo duplicado do domínio real
+   * depois, e é trabalhoso de desfazer.
+   */
+  noindex: process.env.NEXT_PUBLIC_NOINDEX === "1",
   locale: "pt_BR",
   lang: "pt-BR",
   edition: "2026",
